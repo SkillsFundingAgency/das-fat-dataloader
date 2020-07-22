@@ -3,9 +3,13 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
+using SFA.DAS.Functions.Importer.Application.Services;
+using SFA.DAS.Functions.Importer.Domain.Configuration;
+using SFA.DAS.Functions.Importer.Domain.Interfaces;
 
 namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
 {

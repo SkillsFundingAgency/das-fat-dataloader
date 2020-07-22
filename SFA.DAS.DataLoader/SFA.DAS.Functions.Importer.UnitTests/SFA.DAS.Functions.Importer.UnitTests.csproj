@@ -21,4 +21,8 @@
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\SFA.DAS.Functions.Importer\SFA.DAS.Functions.Importer.csproj" />
+    </ItemGroup>
+
 </Project>
