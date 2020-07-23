@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
@@ -31,11 +33,19 @@ namespace SFA.DAS.Functions.Importer.Application.Services
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
             }
 
-            foreach (var url in _configuration.Urls)
+
+            var urlList = SplitUrlsStringByComma(_configuration.Urls);
+
+            foreach (var url in urlList)
             {
-                _client.PostAsync($"{_configuration.Urls}ops/dataload", null).ConfigureAwait(false);
+                _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
             };
         }
-        
+
+        private static List<string> SplitUrlsStringByComma(string urls)
+        {
+            List<string> splitUrlList = urls.Split(",").ToList();
+            return splitUrlList;
+        }
     }
 }
