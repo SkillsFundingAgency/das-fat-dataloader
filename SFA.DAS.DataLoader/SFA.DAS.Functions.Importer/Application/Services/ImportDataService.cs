@@ -30,8 +30,11 @@ namespace SFA.DAS.Functions.Importer.Application.Services
                 var token = _azureClientCredentialHelper.GetAccessTokenAsync().Result;
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
             }
-            
-            _client.PostAsync($"{_configuration.Url}ops/dataload", null).ConfigureAwait(false);
+
+            foreach (var url in _configuration.Urls)
+            {
+                _client.PostAsync($"{_configuration.Urls}ops/dataload", null).ConfigureAwait(false);
+            };
         }
         
     }
