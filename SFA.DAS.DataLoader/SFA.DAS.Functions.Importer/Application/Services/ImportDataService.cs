@@ -34,18 +34,20 @@ namespace SFA.DAS.Functions.Importer.Application.Services
             }
 
 
-            var urlList = SplitUrlsStringByComma(_configuration.Urls);
+            // var urlList = SplitUrlsStringByComma(_configuration.Urls);
 
-            foreach (var url in urlList)
+            foreach (var url in _configuration.Urls.Split(","))
             {
                 _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
             };
         }
 
+        /*
         private static List<string> SplitUrlsStringByComma(string urls)
         {
             List<string> splitUrlList = urls.Split(",").ToList();
             return splitUrlList;
         }
+        */
     }
 }

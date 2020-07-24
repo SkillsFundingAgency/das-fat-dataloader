@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -24,14 +25,14 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
             azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync()).ReturnsAsync(authToken);
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
-            config.Url = "https://test.local/";
+            config.Urls = "https://test.local/";
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.Url}ops/dataload");
+            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.Urls}ops/dataload");
             var client = new HttpClient(httpMessageHandler.Object);
             var service = new ImportDataService(client, configuration.Object, azureClientCredentialHelper.Object, new ImporterEnvironment("TEST"));
             
@@ -44,11 +45,49 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Post)
-                        && c.RequestUri.AbsoluteUri.Equals($"{config.Url}ops/dataload")
+                        && c.RequestUri.AbsoluteUri.Equals($"{config.Urls}ops/dataload")
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
                 );
+        }
+
+        [Test, AutoData]
+        public void Then_The_Dataload_Is_Called_For_Multiple_Endpoints(
+            string authToken,
+            ImporterConfiguration config)
+        {
+            //Arrange
+            var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
+            azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync()).ReturnsAsync(authToken);
+            var configuration = new Mock<IOptions<ImporterConfiguration>>();
+            var urls = new List<string> { "https://local.url1/", "https://local.url2/", "https://local.url3/", "https://local.url4/" };
+            config.Urls = string.Join(",", urls);
+            configuration.Setup(x => x.Value).Returns(config);
+            var response = new HttpResponseMessage
+            {
+                Content = new StringContent(""),
+                StatusCode = HttpStatusCode.Accepted
+            };
+            var httpMessageHandler = SetupMessageHandlerMock(response, $"/ops/dataload");
+            var client = new HttpClient(httpMessageHandler.Object);
+            var service = new ImportDataService(client, configuration.Object, azureClientCredentialHelper.Object, new ImporterEnvironment("TEST"));
+            //Act
+            service.Import();
+            //Assert
+            foreach (var url in urls)
+            {
+                httpMessageHandler.Protected()
+                    .Verify<Task<HttpResponseMessage>>(
+                        "SendAsync", Times.Once(),
+                        ItExpr.Is<HttpRequestMessage>(c =>
+                            c.Method.Equals(HttpMethod.Post)
+                            && c.RequestUri.AbsoluteUri.Equals($"{url}ops/dataload")
+                            && c.Headers.Authorization.Scheme.Equals("Bearer")
+                            && c.Headers.Authorization.Parameter.Equals(authToken)),
+                        ItExpr.IsAny<CancellationToken>()
+                    );
+            }
         }
 
         [Test, AutoData]
@@ -57,32 +96,32 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
         {
             //Arrange
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
-            config.Url = "https://test.local/";
+            config.Urls = "https://test.local/";
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.Url}ops/dataload");
+            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.Urls}ops/dataload");
             var client = new HttpClient(httpMessageHandler.Object);
             var service = new ImportDataService(client, configuration.Object, Mock.Of<IAzureClientCredentialHelper>(), new ImporterEnvironment("LOCAL"));
             
             //Act
             service.Import();
-            
+
             //Assert
             httpMessageHandler.Protected()
                 .Verify<Task<HttpResponseMessage>>(
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Post)
-                        && c.RequestUri.AbsoluteUri.Equals($"{config.Url}ops/dataload")
+                        && c.RequestUri.AbsoluteUri.Equals($"{config.Urls}ops/dataload")
                         && c.Headers.Authorization == null),
                     ItExpr.IsAny<CancellationToken>()
                 );
         }
-        
+
         private Mock<HttpMessageHandler> SetupMessageHandlerMock(HttpResponseMessage response, string baseUrl)
         {
             var httpMessageHandler = new Mock<HttpMessageHandler>();
@@ -91,7 +130,7 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Get)
-                        && c.RequestUri.AbsoluteUri.Equals(baseUrl)),
+                        && c.RequestUri.AbsoluteUri.EndsWith(baseUrl)),
                     ItExpr.IsAny<CancellationToken>()
                 )
                 .ReturnsAsync((HttpRequestMessage request, CancellationToken token) => response);
