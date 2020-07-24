@@ -33,21 +33,10 @@ namespace SFA.DAS.Functions.Importer.Application.Services
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
             }
 
-
-            // var urlList = SplitUrlsStringByComma(_configuration.Urls);
-
             foreach (var url in _configuration.Urls.Split(","))
             {
                 _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
             };
         }
-
-        /*
-        private static List<string> SplitUrlsStringByComma(string urls)
-        {
-            List<string> splitUrlList = urls.Split(",").ToList();
-            return splitUrlList;
-        }
-        */
     }
 }
