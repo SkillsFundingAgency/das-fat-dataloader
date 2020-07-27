@@ -48,7 +48,7 @@
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "appServicePlanName": "[concat(variables('resourceNamePrefix'),'-asp')]",
-        "importerFunctionAppName": "[concat(variables('resourceNamePrefix'),'-imp-fa')]"
+        "functionAppName": "[concat(variables('resourceNamePrefix'),'-fa')]"
     },
     "resources": [
         {
@@ -116,10 +116,10 @@
                 },
                 "parameters": {
                     "appInsightsName": {
-                        "value": "[variables('importerFunctionAppName')]"
+                        "value": "[variables('functionAppName')]"
                     },
                     "attachedService": {
-                        "value": "[variables('importerFunctionAppName')]"
+                        "value": "[variables('functionAppName')]"
                     }
                 }
             }
@@ -136,7 +136,7 @@
                 },
                 "parameters": {
                     "functionAppName": {
-                        "value": "[variables('importerFunctionAppName')]"
+                        "value": "[variables('functionAppName')]"
                     },
                     "appServicePlanName": {
                         "value": "[variables('appServicePlanName')]"
@@ -192,9 +192,9 @@
         }
     ],
     "outputs": {
-        "ImporterFunctionAppName": {
+        "functionAppName": {
             "type": "string",
-            "value": "[variables('importerFunctionAppName')]"
+            "value": "[variables('functionAppName')]"
         }
     }
 }
