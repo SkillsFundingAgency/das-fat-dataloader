@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -23,16 +24,19 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
-            azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync()).ReturnsAsync(authToken);
+            azureClientCredentialHelper
+                .Setup(x => x.GetAccessTokenAsync(It.Is<string>(c=>c.StartsWith("tenant"))))
+                .ReturnsAsync(authToken);
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
-            config.Urls = "https://test.local/";
+            var dataUrl = "https://test.local/";
+            config.Urls = $"{dataUrl}|tenant";
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.Urls}ops/dataload");
+            var httpMessageHandler = SetupMessageHandlerMock(response, $"{dataUrl}ops/dataload");
             var client = new HttpClient(httpMessageHandler.Object);
             var service = new ImportDataService(client, configuration.Object, azureClientCredentialHelper.Object, new ImporterEnvironment("TEST"));
             
@@ -45,7 +49,7 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Post)
-                        && c.RequestUri.AbsoluteUri.Equals($"{config.Urls}ops/dataload")
+                        && c.RequestUri.AbsoluteUri.Equals($"{dataUrl}ops/dataload")
                         && c.Headers.Authorization.Scheme.Equals("Bearer")
                         && c.Headers.Authorization.Parameter.Equals(authToken)),
                     ItExpr.IsAny<CancellationToken>()
@@ -59,9 +63,11 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
         {
             //Arrange
             var azureClientCredentialHelper = new Mock<IAzureClientCredentialHelper>();
-            azureClientCredentialHelper.Setup(x => x.GetAccessTokenAsync()).ReturnsAsync(authToken);
+            azureClientCredentialHelper
+                .Setup(x => x.GetAccessTokenAsync(It.Is<string>(c=>c.StartsWith("tenant"))))
+                .ReturnsAsync(authToken);
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
-            var urls = new List<string> { "https://local.url1/", "https://local.url2/", "https://local.url3/", "https://local.url4/" };
+            var urls = new List<string> { "https://local.url1/|tenant1", "https://local.url2/|tenant2", "https://local.url3/|tenant3", "https://local.url4/|tenant4" };
             config.Urls = string.Join(",", urls);
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
@@ -77,12 +83,13 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
             //Assert
             foreach (var url in urls)
             {
+                var dataUrl = url.Split("|").First();
                 httpMessageHandler.Protected()
                     .Verify<Task<HttpResponseMessage>>(
                         "SendAsync", Times.Once(),
                         ItExpr.Is<HttpRequestMessage>(c =>
                             c.Method.Equals(HttpMethod.Post)
-                            && c.RequestUri.AbsoluteUri.Equals($"{url}ops/dataload")
+                            && c.RequestUri.AbsoluteUri.Equals($"{dataUrl}ops/dataload")
                             && c.Headers.Authorization.Scheme.Equals("Bearer")
                             && c.Headers.Authorization.Parameter.Equals(authToken)),
                         ItExpr.IsAny<CancellationToken>()

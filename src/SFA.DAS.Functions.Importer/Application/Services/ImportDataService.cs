@@ -27,14 +27,20 @@ namespace SFA.DAS.Functions.Importer.Application.Services
 
         public void Import()
         {
-            if (!_importerEnvironment.EnvironmentName.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+            foreach (var dataLoadOperation in _configuration.Urls.Split(","))
             {
-                var token = _azureClientCredentialHelper.GetAccessTokenAsync().Result;
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
-            }
+                var dataLoadOperationValues = dataLoadOperation.Split("|");
+                var url = dataLoadOperationValues[0];
+                
+                
+                if (!_importerEnvironment.EnvironmentName.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    var identifier = dataLoadOperationValues[1];
+                    var token = _azureClientCredentialHelper.GetAccessTokenAsync(identifier).Result;
+                    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
+                }
 
-            foreach (var url in _configuration.Urls.Split(","))
-            {
+            
                 _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
             };
         }

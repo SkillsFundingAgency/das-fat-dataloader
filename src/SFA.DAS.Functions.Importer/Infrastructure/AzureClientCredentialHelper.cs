@@ -7,18 +7,11 @@ using SFA.DAS.Functions.Importer.Domain.Interfaces;
 namespace SFA.DAS.Functions.Importer.Infrastructure
 {
     public class AzureClientCredentialHelper : IAzureClientCredentialHelper
-    {
-        private readonly ImporterConfiguration _configuration;
-
-        public AzureClientCredentialHelper (IOptions<ImporterConfiguration> configuration)
-        {
-            _configuration = configuration.Value;
-        }
-        
-        public async Task<string> GetAccessTokenAsync()
+    {   
+        public async Task<string> GetAccessTokenAsync(string identifier)
         {
             var azureServiceTokenProvider = new AzureServiceTokenProvider();
-            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(_configuration.Identifier);
+            var accessToken = await azureServiceTokenProvider.GetAccessTokenAsync(identifier);
          
             return accessToken;
         }

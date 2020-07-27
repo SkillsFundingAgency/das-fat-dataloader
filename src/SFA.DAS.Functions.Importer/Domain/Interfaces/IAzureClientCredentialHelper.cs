@@ -4,6 +4,6 @@ namespace SFA.DAS.Functions.Importer.Domain.Interfaces
 {
     public interface IAzureClientCredentialHelper
     {
-        Task<string> GetAccessTokenAsync();
+        Task<string> GetAccessTokenAsync(string identifier);
     }
 }
