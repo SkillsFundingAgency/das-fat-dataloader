@@ -195,14 +195,6 @@
         "ImporterFunctionAppName": {
             "type": "string",
             "value": "[variables('importerFunctionAppName')]"
-        },
-        "ApiAppServiceName": {
-            "type": "string",
-            "value": "[variables('apiAppServiceName')]"
-        },
-        "DatabaseName": {
-            "type": "string",
-            "value": "[variables('databaseName')]"
         }
     }
 }
