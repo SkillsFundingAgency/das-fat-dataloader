@@ -30,6 +30,7 @@ jobs:
     displayName: GitVersion
     inputs:
       configFilePath: GitVersion.yml
+      versionSpec: 5.x
       updateAssemblyInfo: true
 
   - task: DotNetCoreCLI@2
