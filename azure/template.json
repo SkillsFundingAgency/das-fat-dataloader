@@ -14,9 +14,6 @@
         "sharedEnvResourceGroup": {
             "type": "string"
         },
-        "sharedBackEndAppServicePlanName": {
-            "type": "string"
-        },
         "appServiceAllowedIPs": {
             "type": "array",
             "defaultValue": []
