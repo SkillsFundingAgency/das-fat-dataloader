@@ -125,26 +125,6 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "api-application-insights",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {
-                        "value": "[variables('apiAppServiceName')]"
-                    },
-                    "attachedService": {
-                        "value": "[variables('apiAppServiceName')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
             "name": "importer-function-app-insights",
             "type": "Microsoft.Resources/deployments",
             "properties": {
