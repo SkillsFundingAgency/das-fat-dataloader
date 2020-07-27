@@ -28,6 +28,9 @@
         "sharedStorageAccountConnectionString": {
             "type": "securestring"
         },
+        "sharedEnvVirtualNetworkName": {
+            "type": "string"
+        },
         "subnetObject": {
             "type": "object"
         },
