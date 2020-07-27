@@ -47,7 +47,7 @@ jobs:
       arguments: '--configuration $(buildConfiguration) --no-restore'
       
   - task: DotNetCoreCLI@2
-    displayName: Test
+    displayName: Unit Tests
     inputs:
       command: test
       projects: '**/*.UnitTests.csproj'
