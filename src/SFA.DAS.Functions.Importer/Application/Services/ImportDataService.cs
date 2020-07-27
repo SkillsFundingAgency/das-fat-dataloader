@@ -27,7 +27,7 @@ namespace SFA.DAS.Functions.Importer.Application.Services
 
         public void Import()
         {
-            foreach (var dataLoadOperation in _configuration.Urls.Split(","))
+            foreach (var dataLoadOperation in _configuration.DataLoaderBaseUrlsAndIdentifierUris.Split(","))
             {
                 var dataLoadOperationValues = dataLoadOperation.Split("|");
                 var url = dataLoadOperationValues[0];

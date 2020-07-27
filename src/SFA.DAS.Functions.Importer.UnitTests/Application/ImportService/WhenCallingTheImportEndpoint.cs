@@ -29,7 +29,7 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                 .ReturnsAsync(authToken);
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
             var dataUrl = "https://test.local/";
-            config.Urls = $"{dataUrl}|tenant";
+            config.DataLoaderBaseUrlsAndIdentifierUris = $"{dataUrl}|tenant";
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
@@ -68,7 +68,7 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                 .ReturnsAsync(authToken);
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
             var urls = new List<string> { "https://local.url1/|tenant1", "https://local.url2/|tenant2", "https://local.url3/|tenant3", "https://local.url4/|tenant4" };
-            config.Urls = string.Join(",", urls);
+            config.DataLoaderBaseUrlsAndIdentifierUris = string.Join(",", urls);
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
@@ -103,14 +103,14 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
         {
             //Arrange
             var configuration = new Mock<IOptions<ImporterConfiguration>>();
-            config.Urls = "https://test.local/";
+            config.DataLoaderBaseUrlsAndIdentifierUris = "https://test.local/";
             configuration.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
                 Content = new StringContent(""),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.Urls}ops/dataload");
+            var httpMessageHandler = SetupMessageHandlerMock(response, $"{config.DataLoaderBaseUrlsAndIdentifierUris}ops/dataload");
             var client = new HttpClient(httpMessageHandler.Object);
             var service = new ImportDataService(client, configuration.Object, Mock.Of<IAzureClientCredentialHelper>(), new ImporterEnvironment("LOCAL"));
             
@@ -123,7 +123,7 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                     "SendAsync", Times.Once(),
                     ItExpr.Is<HttpRequestMessage>(c =>
                         c.Method.Equals(HttpMethod.Post)
-                        && c.RequestUri.AbsoluteUri.Equals($"{config.Urls}ops/dataload")
+                        && c.RequestUri.AbsoluteUri.Equals($"{config.DataLoaderBaseUrlsAndIdentifierUris}ops/dataload")
                         && c.Headers.Authorization == null),
                     ItExpr.IsAny<CancellationToken>()
                 );
