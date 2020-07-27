@@ -24,6 +24,15 @@
         },
         "configurationStorageConnectionString": {
             "type": "securestring"
+        },
+        "subnetObject": {
+            "type": "object"
+        },
+        "subnetServiceEndpointList": {
+            "type": "array"
+        },
+        "subnetDelegations": {
+            "type": "array"
         }
     },
     "variables": {
@@ -33,6 +42,39 @@
         "importerFunctionAppName": "[concat(variables('resourceNamePrefix'),'-imp-fa')]"
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "function-app-subnet",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "type": "Microsoft.Resources/deployments",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'subnet.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualNetworkName": {
+                        "value": "[parameters('sharedEnvVirtualNetworkName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetObject').name]"
+                    },
+                    "subnetAddressPrefix": {
+                        "value": "[parameters('subnetObject').addressSpace]"
+                    },
+                    "subnetResourceId": {
+                        "value": "[reference('function-app-subnet').outputs.SubnetResourceId.value]"
+                    },
+                    "serviceEndpointList": {
+                        "value": "[parameters('subnetServiceEndpointList')]"
+                    },
+                    "delegations": {
+                        "value": "[parameters('subnetDelegations')]"
+                    }
+                }
+            }
+        },
         {
             "apiVersion": "2017-05-10",
             "name": "app-service-plan",
@@ -76,7 +118,7 @@
                 }
             }
         },
-        {
+        {ropertie
             "apiVersion": "2017-05-10",
             "name": "importer-function-app",
             "type": "Microsoft.Resources/deployments",
