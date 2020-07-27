@@ -11,13 +11,6 @@
         "serviceName": {
             "type": "string"
         },
-        "sharedEnvResourceGroup": {
-            "type": "string"
-        },
-        "appServiceAllowedIPs": {
-            "type": "array",
-            "defaultValue": []
-        },
         "appServicePlanInstances": {
             "type": "int",
             "defaultValue": 1
@@ -25,45 +18,8 @@
         "appServicePlanSize": {
             "type": "string",
             "defaultValue": "1"
-        },        
-        "apiCustomHostname": {
-            "type": "string"
-        },
-        "keyvaultCertificateName": {
-            "type": "string"
-        },
-        "sharedKeyVaultName": {
-            "type": "string"
-        },
-        "sharedManagementResourceGroup": {
-            "type": "string"
-        },
-        "sharedSQLServerName": {
-            "type": "string"
-        },
-        "elasticPoolName": {
-            "defaultValue": "",
-            "type": "string"
-        },        
-        "databaseSkuName": {
-            "type": "string",
-            "defaultValue": "S0"
-        },
-        "databaseTier": {
-            "type": "string",
-            "defaultValue": "Standard"
-        },
-        "logAnalyticsSubscriptionId": {
-            "type": "string",
-            "defaultValue": "[subscription().subscriptionId]"
-        },
-        "logAnalyticsWorkspaceName": {
-            "type": "string"
         },
         "loggingRedisConnectionString": {
-            "type": "string"
-        },
-        "loggingRedisKey": {
             "type": "string"
         },
         "configurationStorageConnectionString": {
@@ -74,10 +30,7 @@
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "appServicePlanName": "[concat(variables('resourceNamePrefix'),'-asp')]",
-        "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-        "importerFunctionAppName": "[concat(variables('resourceNamePrefix'),'-imp-fa')]",
-        "storageAccountName": "[concat('das',toLower(parameters('resourceEnvironmentName')),parameters('serviceName'),'str')]",
-        "databaseName": "[concat(variables('resourceNamePrefix'), '-db')]"
+        "importerFunctionAppName": "[concat(variables('resourceNamePrefix'),'-imp-fa')]"
     },
     "resources": [
         {
