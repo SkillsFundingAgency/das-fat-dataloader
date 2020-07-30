@@ -40,9 +40,16 @@ namespace SFA.DAS.Functions.Importer.Application.Services
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
                 }
 
+                AddVersionHeader("1.0");
+
             
                 _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
             };
+        }
+        
+        private void AddVersionHeader(string requestVersion)
+        {
+            _client.DefaultRequestHeaders.Add("X-Version", requestVersion);
         }
     }
 }
