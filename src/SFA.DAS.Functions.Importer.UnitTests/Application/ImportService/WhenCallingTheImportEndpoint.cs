@@ -91,7 +91,7 @@ namespace SFA.DAS.Functions.Importer.UnitTests.Application.ImportService
                             c.Method.Equals(HttpMethod.Post)
                             && c.RequestUri.AbsoluteUri.Equals($"{dataUrl}ops/dataload")
                             && c.Headers.Authorization.Scheme.Equals("Bearer")
-                            && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.FirstOrDefault() == "1.0"
+                            && c.Headers.FirstOrDefault(h=>h.Key.Equals("X-Version")).Value.Single() == "1.0"
                             && c.Headers.Authorization.Parameter.Equals(authToken)),
                         ItExpr.IsAny<CancellationToken>()
                     );

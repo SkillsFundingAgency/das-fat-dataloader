@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Functions.Importer.Domain.Configuration;
 using SFA.DAS.Functions.Importer.Domain.Interfaces;
@@ -27,6 +28,7 @@ namespace SFA.DAS.Functions.Importer.Application.Services
 
         public void Import()
         {
+            AddVersionHeader("1.0");
             foreach (var dataLoadOperation in _configuration.DataLoaderBaseUrlsAndIdentifierUris.Split(","))
             {
                 var dataLoadOperationValues = dataLoadOperation.Split("|");
@@ -39,12 +41,9 @@ namespace SFA.DAS.Functions.Importer.Application.Services
                     var token = _azureClientCredentialHelper.GetAccessTokenAsync(identifier).Result;
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
                 }
-
-                AddVersionHeader("1.0");
-
-            
+                
                 _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
-            };
+            }
         }
         
         private void AddVersionHeader(string requestVersion)
