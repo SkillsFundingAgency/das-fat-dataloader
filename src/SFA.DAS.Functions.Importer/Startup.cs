@@ -53,7 +53,7 @@ namespace SFA.DAS.Functions.Importer
 
             builder.Services.AddSingleton(new ImporterEnvironment(configuration["EnvironmentName"]));
 
-            builder.Services.AddHttpClient<IImportDataService, ImportDataService>();
+            builder.Services.AddHttpClient<IImportDataService, ImportDataService>(options=>options.Timeout = TimeSpan.FromMinutes(10));
             builder.Services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             
             builder.Services.BuildServiceProvider();
