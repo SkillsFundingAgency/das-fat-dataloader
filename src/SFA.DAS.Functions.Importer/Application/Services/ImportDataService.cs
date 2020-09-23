@@ -28,6 +28,7 @@ namespace SFA.DAS.Functions.Importer.Application.Services
 
         public void Import()
         {
+            var taskList = new List<Task>();
             AddVersionHeader("1.0");
             foreach (var dataLoadOperation in _configuration.DataLoaderBaseUrlsAndIdentifierUris.Split(","))
             {
@@ -42,8 +43,10 @@ namespace SFA.DAS.Functions.Importer.Application.Services
                     _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);    
                 }
                 
-                _client.PostAsync($"{url}ops/dataload", null).ConfigureAwait(false);
+                taskList.Add(_client.PostAsync($"{url}ops/dataload", null));
             }
+
+            Task.WhenAll(taskList.ToArray());
         }
         
         private void AddVersionHeader(string requestVersion)
