@@ -42,6 +42,10 @@
         },
         "subnetDelegations": {
             "type": "array"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow('yyMMddHHmmss')]"
         }
     },
     "variables": {
@@ -53,7 +57,7 @@
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "function-app-subnet",
+            "name": "[concat('function-app-subnet-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -83,7 +87,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "app-service-plan",
+            "name": "[concat('app-service-plan-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -106,7 +110,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "importer-function-app-insights",
+            "name": "[concat('importer-function-app-insights-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -126,7 +130,7 @@
         },
         {
             "apiVersion": "2017-05-10",
-            "name": "importer-function-app",
+            "name": "[concat('importer-function-app-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -145,7 +149,7 @@
                         "value": "[resourceGroup().name]"
                     },
                     "subnetResourceId": {
-                        "value": "[reference('function-app-subnet').outputs.SubnetResourceId.value]"
+                        "value": "[reference(concat('function-app-subnet-', parameters('utcValue'))).outputs.SubnetResourceId.value]"
                     },
                     "functionAppAppSettings": {
                         "value": {
@@ -172,7 +176,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference('importer-function-app-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat('importer-function-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 },
                                 {
                                     "name": "FUNCTIONS_EXTENSION_VERSION",
