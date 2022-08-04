@@ -46,6 +46,9 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow('yyMMddHHmmss')]"
+        },
+         "workerAccessRestrictions": {
+            "type": "array"
         }
     },
     "variables": {
@@ -150,6 +153,9 @@
                     },
                     "subnetResourceId": {
                         "value": "[reference(concat('function-app-subnet-', parameters('utcValue'))).outputs.SubnetResourceId.value]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('workerAccessRestrictions')]"
                     },
                     "functionAppAppSettings": {
                         "value": {
