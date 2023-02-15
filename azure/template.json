@@ -49,6 +49,9 @@
         },
          "workerAccessRestrictions": {
             "type": "array"
+        },
+        "netFrameworkVersion": {
+            "value": "v6.0"
         }
     },
     "variables": {
@@ -186,7 +189,7 @@
                                 },
                                 {
                                     "name": "FUNCTIONS_EXTENSION_VERSION",
-                                    "value": "~3"
+                                    "value": "~4"
                                 },
                                 {
                                     "name": "LoggingRedisConnectionString",
