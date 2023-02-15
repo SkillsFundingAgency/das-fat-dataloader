@@ -84,9 +84,6 @@
                     },
                     "delegations": {
                         "value": "[parameters('subnetDelegations')]"
-                    },
-                    "netFrameworkVersion": {
-                        "value": "v6.0"
                     }
                 }
             }
@@ -156,6 +153,9 @@
                     },
                     "subnetResourceId": {
                         "value": "[reference(concat('function-app-subnet-', parameters('utcValue'))).outputs.SubnetResourceId.value]"
+                    },
+                    "netFrameworkVersion": {
+                        "value": "v6.0"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('workerAccessRestrictions')]"
