@@ -5,31 +5,16 @@ using System.Net.Http.Headers;
 
 namespace SFA.DAS.Functions.Importer.Application.Services;
 
-public class ImportDataService : IImportDataService
+public class ImportDataService(HttpClient _client, IOptions<ImporterConfiguration> _configuration, IAzureClientCredentialHelper _azureClientCredentialHelper, ImporterEnvironment _importerEnvironment) : IImportDataService
 {
-    private readonly HttpClient _client;
-    private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
-    private readonly ImporterEnvironment _importerEnvironment;
-    private readonly ImporterConfiguration _configuration;
-
-    public ImportDataService(  HttpClient client, IOptions<ImporterConfiguration> configuration,
-        IAzureClientCredentialHelper azureClientCredentialHelper, ImporterEnvironment importerEnvironment)
-    {
-        _client = client;
-        _azureClientCredentialHelper = azureClientCredentialHelper;
-        _importerEnvironment = importerEnvironment;
-        _configuration = configuration.Value;
-    }
-
     public void Import()
     {
         var taskList = new List<Task>();
         AddVersionHeader("1.0");
-        foreach (var dataLoadOperation in _configuration.DataLoaderBaseUrlsAndIdentifierUris.Split(","))
+        foreach (var dataLoadOperation in _configuration.Value.DataLoaderBaseUrlsAndIdentifierUris.Split(","))
         {
             var dataLoadOperationValues = dataLoadOperation.Split("|");
             var url = dataLoadOperationValues[0];
-            
             
             if (!_importerEnvironment.EnvironmentName.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -41,7 +26,7 @@ public class ImportDataService : IImportDataService
             taskList.Add(_client.PostAsync($"{url}ops/dataload", null));
         }
 
-        Task.WhenAll(taskList.ToArray());
+        Task.WhenAll([.. taskList]);
     }
     
     private void AddVersionHeader(string requestVersion)
