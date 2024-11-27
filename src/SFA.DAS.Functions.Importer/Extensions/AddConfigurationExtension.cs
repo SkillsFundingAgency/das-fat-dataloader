@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SFA.DAS.Configuration.AzureTableStorage;
-using System.IO;
 
 namespace SFA.DAS.Functions.Importer.Extensions;
 
@@ -16,7 +15,7 @@ public static class AddConfigurationExtension
 
         builder.AddAzureTableStorage(options =>
         {
-            options.ConfigurationKeys = config["ConfigNames"].Split(",");
+            options.ConfigurationKeys = config["ConfigNames"]!.Split(",");
             options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
             options.EnvironmentName = config["EnvironmentName"];
             options.PreFixConfigurationKeys = false;
