@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -11,14 +11,16 @@
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.18.1" />
         <PackageReference Include="AutoFixture.NUnit3" Version="4.18.1" />
         <PackageReference Include="FluentAssertions" Version="6.12.2" />
-        <PackageReference Include="NUnit" Version="3.14.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0">
+		<PackageReference Include="NUnit3TestAdapter" Version="4.6.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
         <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="17.1.103" />
         <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
+		<!--Nunit versions > 4.0.0 incompatible with AutoFixture 4.18.1-->
+		<PackageReference Include="NUnit" Version="3.14.0" />
+		<!--Nunit versions > 4.0.0 incompatible with AutoFixture 4.18.1-->
     </ItemGroup>
 
     <ItemGroup>

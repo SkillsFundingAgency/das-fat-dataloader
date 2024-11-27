@@ -26,7 +26,7 @@ public class ImportDataService(HttpClient _client, IOptions<ImporterConfiguratio
             taskList.Add(_client.PostAsync($"{url}ops/dataload", null));
         }
 
-        Task.WhenAll([.. taskList]);
+        Task.WhenAll(taskList);
     }
     
     private void AddVersionHeader(string requestVersion)
