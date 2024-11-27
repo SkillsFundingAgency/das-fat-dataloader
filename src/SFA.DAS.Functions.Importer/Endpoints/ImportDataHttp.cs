@@ -1,33 +1,20 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Functions.Importer.Domain.Interfaces;
 
-namespace SFA.DAS.Functions.Importer.Endpoints
+namespace SFA.DAS.Functions.Importer.Endpoints;
+
+public class ImportDataHttp(IImportDataService _service, ILogger<ImportDataHttp> _logger)
 {
-    public class ImportDataHttp
+    [Function("ImportDataHttp")]
+    public async Task<IActionResult> RunAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
     {
-        private readonly IImportDataService _service;
-
-        public ImportDataHttp (IImportDataService service)
-        {
-            _service = service;
-        }
+        _logger.LogInformation("C# HTTP trigger function processed a request.");
         
-        [FunctionName("ImportDataHttp")]
-        public async Task<IActionResult> RunAsync(
-            [HttpTrigger(AuthorizationLevel.Function, "post")]
-            HttpRequest req, ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-            
-            await Task.Run(() => _service.Import());
+        await Task.Run(() => _service.Import());
 
-            return new NoContentResult();
-            
-        }
+        return new NoContentResult();
     }
 }
