@@ -4,7 +4,7 @@
 
 # Requirements
 
-DotNet Core 3.1 and any supported IDE for DEV running.
+DotNet 8.0 and any supported IDE for DEV running.
 
 Azure Storage Emulator
 
@@ -31,3 +31,18 @@ Data:
 ```
 
 The configuration item is a comma separated list of baseurl endpoints and the identifier used for managed identity authentication. it is assumed that each endpoint has a `ops/dataload` controller action. The function can be invoked manually via a http endpoint, or it is configured to run at 3am every day.
+
+local.settings.json file
+
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true;",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
+    "ConfigNames": "SFA.DAS.DataLoader.Function",
+    "EnvironmentName": "LOCAL"
+  }
+}
+```
